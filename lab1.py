@@ -1,45 +1,52 @@
-class Node:
-
-    def __init__(self, data):
+class PriorityQueue:
+    def __init__(self, value):
+        self.value = value
         self.left = None
         self.right = None
-        self.data = data
-        self.all_numbers = [data]
 
-    def insert(self, data):
-        self.all_numbers.append(data)
-        # Compare the new value with the parent node
-        if self.data:
-            if data < self.data:
-                if self.left is None:
-                    self.left = Node(data)
-                else:
-                    self.left.insert(data)
-            elif data > self.data:
-                if self.right is None:
-                    self.right = Node(data)
-                else:
-                    self.right.insert(data)
+    def insert(self, value):
+        if value < self.value:
+            if self.left is None:
+                self.left = PriorityQueue(value)
+            else:
+                self.left.insert(value)
         else:
-            self.data = data
+            if self.right is None:
+                self.right = PriorityQueue(value)
+            else:
+                self.right.insert(value)
 
-    # Print the tree
-    def PrintTree(self):
-        if self.left:
-            self.left.PrintTree()
-        yield self.data
+    def _find_max(self):
         if self.right:
-            self.right.PrintTree()
+            return self.right._find_max()
+        return self
 
-    def ravel(self):
-        return self.all_numbers
+    def _remove_max(self, parent):
+        if self.right:
+            return self.right._remove_max(self)
+        if parent:
+            parent.right = self.left
+        return self.value
+
+    def output(self):
+        if self.right:
+            return self._remove_max(None)
+        else:
+            value = self.value
+            if self.left:
+                self.value = self.left.value
+                self.right = self.left.right
+                self.left = self.left.left
+            else:
+                raise ValueError("Очередь пуста!")
+            return value
 
 
-a = Node(123)
-a.insert(456)
-a.insert(12)
-a.insert(23)
-for i in a.PrintTree():
-    print(i)
-print(a.PrintTree())
-print(a.ravel())
+# Пример использования
+pq = PriorityQueue(123)
+pq.insert(456)
+pq.insert(12)
+pq.insert(23)
+
+print(pq.output())
+print(pq.output())
