@@ -1,10 +1,19 @@
-class PriorityQueue:
+class PriorityQueue():
+
+
     def __init__(self, value):
+        self.all_numbers = [value]
         self.value = value
         self.left = None
         self.right = None
 
+    def __len__(self):
+        return len(self.all_numbers)
+    def is_empty(self):
+        return self.left is None and self.right is None
+
     def insert(self, value):
+        self.all_numbers.append(value)
         if value < self.value:
             if self.left is None:
                 self.left = PriorityQueue(value)
@@ -42,11 +51,12 @@ class PriorityQueue:
             return value
 
 
-# Пример использования
 pq = PriorityQueue(123)
 pq.insert(456)
 pq.insert(12)
 pq.insert(23)
-
+print(len(pq))
 print(pq.output())
 print(pq.output())
+print(pq.output())
+print(pq.is_empty())
